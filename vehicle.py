@@ -4,7 +4,8 @@ from time import sleep, time
 from json import dumps
 from kafka import KafkaConsumer, KafkaProducer
 
-BROKER_ADDRESS = 'localhost:9092'
+BROKER_ADDRESS = '127.0.0.1:9092'
+#BROKER_ADDRESS = 'localhost:9092'
 
 class Vehicle:
     def __init__(self, vehicle_id, x_initial, y_initial, battery):

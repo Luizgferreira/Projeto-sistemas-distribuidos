@@ -8,8 +8,8 @@ import socket
 import authentication_pb2
 import authentication_pb2_grpc
 
-
-BROKER_ADDRESS = 'localhost:9092'
+BROKER_ADDRESS = '127.0.0.1:9092'
+#BROKER_ADDRESS = 'localhost:9092'
 class App:
 	def __init__(self, server_address):
 		channel = grpc.insecure_channel(server_address+':5001')
@@ -55,6 +55,6 @@ class App:
 		response = self.stub.user_finish(auth_request)
 
 
-
-x = App(socket.gethostname())
+x = App('127.0.0.1')
+#x = App(socket.gethostname())
 x.start_app()

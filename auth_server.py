@@ -1,6 +1,7 @@
 import grpc
 from concurrent import futures
 import time
+import numpy as np
 from kafka import KafkaProducer
 import authentication_pb2
 import authentication_pb2_grpc
@@ -34,7 +35,8 @@ class Listener(authentication_pb2_grpc.AuthenticationServicer):
         self.cur.execute("select * from usuarios where email='{}'".format(request.user_id))
         recset = self.cur.fetchone()
         user = recset[0]
-        self.cur.execute("insert into viagens (codigo, distancia, ped_usuario, ped_veiculo, custo) values ('{}', '{}', '{}', '{}', '{}')".format(15, request.tempo, user, request.vehicle_id, '100'))
+        last = np.random.randint(0, 100000000)
+        self.cur.execute("insert into viagens (codigo, distancia, ped_usuario, ped_veiculo, custo) values ('{}', '{}', '{}', '{}', '{}')".format(last, request.tempo, user, request.vehicle_id, '100'))
         self.db.commit()
         self.producer.send('finish', key=bytes(str(request.vehicle_id), encoding='utf-8'), value=bytes('True', encoding='utf-8'))
         response = authentication_pb2.Answer()
