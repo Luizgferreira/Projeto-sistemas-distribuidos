@@ -4,8 +4,8 @@ from time import sleep, time
 from json import dumps
 from kafka import KafkaConsumer, KafkaProducer
 
-BROKER_ADDRESS = '127.0.0.1:9092'
-#BROKER_ADDRESS = 'localhost:9092'
+#BROKER_ADDRESS = '127.0.0.1:9092'
+BROKER_ADDRESS = 'localhost:9092'
 
 class Vehicle:
     def __init__(self, vehicle_id, x_initial, y_initial, battery):
@@ -43,11 +43,12 @@ class Vehicle:
         last_time = time()
         while True:
             if keyboard.is_pressed('q'):
+                begin = time()
                 aut = self.check_authorization()
-                print(aut)
+                print('\nfound in {}'.format(time()))
                 if(aut=='True'):
                     self.check_finish()
-                print('get to finish')
+                print('end')
             if(time()-last_time>5):
                 self.send_location()
                 last_time = time()

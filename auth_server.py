@@ -1,11 +1,13 @@
 import grpc
 from concurrent import futures
 import time
+import os
 import numpy as np
 from kafka import KafkaProducer
 import authentication_pb2
 import authentication_pb2_grpc
 import psycopg2
+
 
 BROKER_ADDRESS = 'localhost:9092'
 
@@ -47,12 +49,14 @@ class Listener(authentication_pb2_grpc.AuthenticationServicer):
         a carteira e bateria estão corretos
         '''
         response = authentication_pb2.Answer()
+        '''
         self.cur.execute("select * from veiculos where codigo='{}'".format(request.vehicle_id))
         recset = self.cur.fetchone()
         battery = recset[2]
         if(battery<=5):
             response.is_auth = False
             return response
+        '''
         self.cur.execute("select * from usuarios where email='{}'".format(request.user_id))
         recset = self.cur.fetchone()
         carteira = recset[5]
@@ -66,6 +70,10 @@ class Listener(authentication_pb2_grpc.AuthenticationServicer):
         return response
 
 def start_server():
+    if os.environ.get('https_proxy'):
+        del os.environ['https_proxy']
+    if os.environ.get('http_proxy'):
+        del os.environ['http_proxy']
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     con = psycopg2.connect(host='localhost', database='mobility_volt', user='postgres', password='ec8z21')
     #db = con.cursor()
@@ -73,6 +81,7 @@ def start_server():
 
     print('Starting server. Listening on port 5001')
     server.add_insecure_port('[::]:5001')
+    #server.add_insecure_port('187.116.102.153:5001')
     server.start()
     try:
       while True:
